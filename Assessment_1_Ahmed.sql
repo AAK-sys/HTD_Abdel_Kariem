@@ -9,6 +9,8 @@ BEGIN
 END;
 GO
 
+use RetailSales
+
  -- ===================================================== Create the Database
 CREATE TABLE Customers (
     CustomerID INT PRIMARY KEY,
