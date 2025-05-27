@@ -55,16 +55,16 @@ select distinct customerID, FirstName, LastName, Email, CustomerCity, CustomerSt
                 WHEN LoyaltyMember IS NULL OR LoyaltyMember = '' THEN NULL
                 ELSE NULL
             END
-from retail_sales_data
+from RetailSales_Staging
 
 insert into stores
-select distinct StoreID, storeName, storecity, storestate from retail_sales_data;
+select distinct StoreID, storeName, storecity, storestate from RetailSales_Staging;
 
 insert into products
-select distinct productID, productName, Category, UnitPrice from retail_sales_data;
+select distinct productID, productName, Category, UnitPrice from RetailSales_Staging;
 
 insert into sales
-select saleID, customerID, storeID, productID, saleDate, quantity, totalAmount from retail_sales_data
+select saleID, customerID, storeID, productID, saleDate, quantity, totalAmount from RetailSales_Staging
 
 -- ===================================================== -- Task 1: Count the number of sales by product Category
 
