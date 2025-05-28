@@ -1,3 +1,13 @@
+
+-- =========================================================
+-- INSTR: INSTRUCTOR NOTES
+-- -----------------------
+
+-- Errors in Task: 2, 6, 10, 12, 13 
+
+-- See my notes for each task below.
+-- =========================================================
+
 -- ===================================================== -- Assessment # 1: Retail Sales Database Analysis
 
 -- Submitted By: Ahmed Abdel Kariem
@@ -7,6 +17,9 @@ IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'RetailSales')
 BEGIN
     CREATE DATABASE RetailSales
 END;
+GO
+
+USE RetailSales;
 GO
 
  -- ===================================================== Create the Database
@@ -74,9 +87,13 @@ group by Category
 
 -- ===================================================== -- Task 2: Alter the Sales table to add a Discount column.
 Alter TABLE sales add discount DECIMAL(10,2) default 0;
+-- INSTR: place a GO here
+
 update sales set discount = 0 where discount is null;
+-- INSTR: place a GO here
 
 select * from sales;
+-- INSTR: The tasks specifies to select top 5
 
 -- ===================================================== -- Task 3: Update the LoyaltyMember status for high-spending customers.
 
@@ -118,6 +135,8 @@ select c.LoyaltyMember, avg(s.totalAmount) as AvgSaleAmount from customers c
 join sales s on c.customerID  = s.customerID
 group by LoyaltyMember
 
+-- INSTR: The base table should customers
+
 -- ===================================================== -- Task 7: Create a nonclustered index on the Sales table.
 begin TRANSACTION
 CREATE NONCLUSTERED INDEX IX_Sales_SaleDate
@@ -154,6 +173,9 @@ join sales s on s.customerID = s.customerID
 group by c.state
 GO
 
+
+-- INSTR: The base table should Stores.
+
 -- ===================================================== -- Task 11: Find the top 3 product categories by total sales amount using a CTE.
 with SoldCategories AS (
     select p.Category, sum(s.totalAmount) as TotalSales
@@ -169,6 +191,8 @@ join sales s on s.customerID = c.CustomerID
 join stores st on st.StoreID = s.StoreID
 group by c.CustomerID, c.FirstName, c.LastName
 
+-- INSTR: Missing the DISTINCT keyword in the count state.
+
 -- ===================================================== -- Task 13: Analyze sales trends by month using a temporary table.
 create table #MonthlySales (MonthlySalesID int IDENTITY(1,1) PRIMARY key, SaleYear int, SaleMonth int, TotalSales int)
 
@@ -183,6 +207,8 @@ IF OBJECT_ID('tempdb..#MonthlySales') IS NOT NULL
     drop TABLE #MonthlySales
 GO
 
+-- INSTR: Task specifies the single month with the highest sales
+-- Expected: 2023	11	49409.95
 -- ===================================================== -- Task 14: Create a view for customer purchase history.
 create view vw_CustomerPurchases AS
 select c.*,
