@@ -74,6 +74,7 @@ def handle_missing_values(df, strategy='drop', fill_value=None):
     """Handle missing values using specified strategy ('drop', 'fill').
     Hint: Use pandas.dropna or pandas.fillna. See 'Data Quality & Cleaning with Pandas'.
     """
+    df = df.copy()
     df.replace("", np.nan, inplace=True)
     
     if strategy == 'drop':
