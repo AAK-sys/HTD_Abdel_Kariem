@@ -41,11 +41,16 @@ def create_dim_dates(start_date: str = '2020-01-01', end_date: str = '2024-12-31
         print(e)
         engine = create_engine("sqlite:///:memory:")
     with engine.begin() as conn:
-        dim_dates.to_sql('dim_date', con=conn, if_exists='replace', index=False)
+        dim_dates.to_sql('dim_date', con=conn, if_exists='append', index=False)
     
     return dim_dates
 
 # --- Load Dimension Table ---
+
+def get_table_columns(engine, table_name):
+    insp = inspect(engine)
+    return [col['name'] for col in insp.get_columns(table_name)]
+
 def load_dimension_table(df: pd.DataFrame, table_name: str, sql_conn_str: str):
     url = get_connection_url(sql_conn_str)
     try:
@@ -69,3 +74,50 @@ def load_fact_table(df: pd.DataFrame, table_name: str, sql_conn_str: str):
     with engine.begin() as conn:
         df.to_sql(table_name, con=conn, if_exists='append', index=False)
     print(len(df), "records loaded")
+
+def transform_to_load(profile_df, orders_df, required, sql_conn_str):
+    # 1. Set up DB connection
+    url = get_connection_url(sql_conn_str)
+    engine = create_engine(url)
+
+    # 2. Load dimension tables
+    authors_df = pd.read_sql("SELECT author_key, name AS author FROM dim_author", engine)
+    books_df = pd.read_sql("SELECT book_key, isbn FROM dim_book", engine)
+    customers_df = pd.read_sql("SELECT customer_key, customer_id FROM dim_customer", engine)
+
+    # 3. Merge orders_df with customers_df to get customer_key
+    orders_with_cust = orders_df.merge(
+        customers_df,
+        on="customer_id",
+        how="left"
+    )
+
+    # 4. Merge profile_df with authors_df and books_df to get author_key and book_key
+    author_book_keys = (
+        profile_df
+        .merge(authors_df, left_on="author", right_on="author", how="left")
+        .merge(books_df, left_on="isbn", right_on="isbn", how="left")
+        [["isbn", "author_key", "book_key"]]
+    )
+
+    # 5. Merge orders_with_cust with author_book_keys to get all necessary keys
+    final = orders_with_cust.merge(
+        author_book_keys,
+        left_on="book_isbn",
+        right_on="isbn",
+        how="left"
+    )
+
+    # 6. Convert order_date to date_key (YYYYMMDD format)
+    final["order_date"] = pd.to_datetime(final["order_date"], errors='coerce')
+    final = final.dropna()
+    final["date_key"] = final["order_date"].dt.strftime("%Y%m%d").astype(int)
+    
+    # 7. Select required columns
+    result = final[["book_key", "author_key", "customer_key", "date_key", "quantity", "price"]]
+
+    # 8. Filter for required columns if specified
+    if required:
+        result = result[required]
+
+    return result

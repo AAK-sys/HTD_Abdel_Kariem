@@ -3,7 +3,7 @@ Transformers for BookHaven ETL Assessment
 """
 import pandas as pd
 from etl import cleaning
-
+import numpy as np
 # --- Book Series Transformer ---
 def transform_book_series(df_books):
     """Add a 'series_normalized' column (copy of 'series' for now)."""
@@ -115,9 +115,10 @@ def transform_customers(customers_df):
     df = transform_reading_history(df)
     df = transform_genre_preferences(df)
     df = cleaning.handle_missing_values(df, strategy='drop', fill_value='')
-    df = cleaning.remove_duplicates(df, subset=['email'])
-    expected = ["customer_key", "name", "email", "phone", "genre_preferences"]
+    
+    expected = ["customer_id", "name", "email", "phone", "genre_preferences"]
     df = df[df.columns.intersection(expected)]
+    
     
     return df
 
@@ -129,8 +130,8 @@ def transform_orders(orders_df):
         df['quantity'] = df['quantity'].astype('Int64')
     if 'price' in df.columns:
         df = cleaning.clean_numerics(df, 'price')
-        df['price'] = df['price'].round(2)
-    print(df)
+        df['price'] = df['price'].astype(np.float32).round(2)
+
     df = cleaning.handle_missing_values(df, strategy='fill', fill_value=0)
     df = cleaning.remove_duplicates(df, subset=['order_id'])
     

@@ -10,6 +10,8 @@ Instructions:
 import pandas as pd
 import re
 import numpy as np
+import warnings
+
 # --- Clean Dates ---
 def clean_dates(df, field):
     """Clean and standardize date fields to YYYY-MM-DD format.
@@ -42,8 +44,14 @@ def clean_numerics(df, field):
     """Convert to numeric, set invalid to NaN.
     Hint: Use pandas.to_numeric with error handling. See 'Data Quality & Cleaning with Pandas'.
     """
-    df[field] = pd.to_numeric(df[field], errors='coerce')
-    return df
+    with warnings.catch_warnings():
+        warnings.simplefilter(action='ignore', category=FutureWarning)
+        df.loc[:,field] = df[field].astype(str)
+
+        df.loc[:,field] = df[field].str.replace(r'[^0-9.]', '', regex=True)
+        
+        df.loc[:,field] = pd.to_numeric(df[field], errors='coerce')
+        return df
 
 # --- Clean Text ---
 def clean_text(df, field):

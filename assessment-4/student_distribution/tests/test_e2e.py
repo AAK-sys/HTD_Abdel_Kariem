@@ -110,4 +110,4 @@ def test_verify_mongodb(monkeypatch):
     verify.collection = DummyCollection()
     # Run the script
     exec(open(verify.__file__).read(), verify.__dict__)
-    assert any("Test User" in str(line) for args in output for line in args), f"here is the output you got: {output}"
+    assert any("Test User" in str(line) for args in output for line in args) 
