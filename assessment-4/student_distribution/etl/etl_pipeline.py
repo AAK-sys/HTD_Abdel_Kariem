@@ -62,7 +62,7 @@ def main():
     validation_results.extend(data_quality.validate_field_level(orders_df, order_rules))
     for result in validation_results:
         print(result)
-    
+
     loaders.load_dimension_table(books_df, 'dim_book', DATABASE_CONFIG['sql_server_dw'])
     loaders.load_dimension_table(authors_df, 'dim_author', DATABASE_CONFIG['sql_server_dw'])
     loaders.load_dimension_table(customers_df, 'dim_customer', DATABASE_CONFIG['sql_server_dw'])
