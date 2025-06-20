@@ -17,7 +17,7 @@ def get_sql_server_conn_str(config_key):
     cfg = DATABASE_CONFIG[config_key]
     return (
         f"mssql+pyodbc://{cfg['username']}:{cfg['password']}@{cfg['server']}:{cfg['port']}/"
-        f"{cfg['database']}?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+        f"{cfg['database']}?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes"
     )
 
 # --- CSV Extractor ---

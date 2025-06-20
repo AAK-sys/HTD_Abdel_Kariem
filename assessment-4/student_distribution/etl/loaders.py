@@ -14,7 +14,7 @@ def get_connection_url(dcf):
         f"mssql+pyodbc://{dcf['username']}:"
         f"{dcf['password']}@localhost:1433/"
         f"{dcf['database']}"
-        "?driver=ODBC+Driver+18+for+SQL+Server"
+        "?driver=ODBC+Driver+17+for+SQL+Server"
         "&TrustServerCertificate=yes"
     )
     return url

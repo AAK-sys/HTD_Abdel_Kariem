@@ -13,7 +13,7 @@ SQL_CONN_STR = (
     f"mssql+pyodbc://{DATABASE_CONFIG['sql_server_source']['username']}:"
     f"{DATABASE_CONFIG['sql_server_source']['password']}@localhost:1433/"
     f"{DATABASE_CONFIG['sql_server_source']['database']}"
-    "?driver=ODBC+Driver+18+for+SQL+Server"
+    "?driver=ODBC+Driver+17+for+SQL+Server"
     "&TrustServerCertificate=yes"
 )
 

@@ -9,7 +9,7 @@ username = DATABASE_CONFIG['sql_server_dw']['username']
 password = DATABASE_CONFIG['sql_server_dw']['password']
 
 conn_str = (
-    f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+    f"DRIVER={{ODBC Driver 17 for SQL Server}};"
     f"SERVER={server},1433;"
     f"DATABASE={database};"
     f"UID={username};"
