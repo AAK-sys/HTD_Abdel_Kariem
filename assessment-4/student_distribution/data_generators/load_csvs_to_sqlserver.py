@@ -13,9 +13,14 @@ SQL_CONN_STR = (
     f"mssql+pyodbc://{DATABASE_CONFIG['sql_server_source']['username']}:"
     f"{DATABASE_CONFIG['sql_server_source']['password']}@localhost:1433/"
     f"{DATABASE_CONFIG['sql_server_source']['database']}"
+<<<<<<< HEAD
+=======
+    # "?driver=ODBC+Driver+18+for+SQL+Server"
+>>>>>>> origin/code-review-4-ahmed
     "?driver=ODBC+Driver+17+for+SQL+Server"
     "&TrustServerCertificate=yes"
 )
+
 
 def main():
     engine = sqlalchemy.create_engine(SQL_CONN_STR)
@@ -24,8 +29,9 @@ def main():
             print(f"CSV not found: {csv_path}")
             continue
         df = pd.read_csv(csv_path)
-        df.to_sql(table, engine, if_exists='replace', index=False)
+        df.to_sql(table, engine, if_exists="replace", index=False)
         print(f"Loaded {len(df)} rows into table '{table}'")
 
+
 if __name__ == "__main__":
-    main() 
+    main()

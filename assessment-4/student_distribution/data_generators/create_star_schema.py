@@ -1,14 +1,19 @@
 import sys, os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pyodbc
 from config import DATABASE_CONFIG
 
-server = DATABASE_CONFIG['sql_server_dw']['server']
-database = DATABASE_CONFIG['sql_server_dw']['database']
-username = DATABASE_CONFIG['sql_server_dw']['username']
-password = DATABASE_CONFIG['sql_server_dw']['password']
+server = DATABASE_CONFIG["sql_server_dw"]["server"]
+database = DATABASE_CONFIG["sql_server_dw"]["database"]
+username = DATABASE_CONFIG["sql_server_dw"]["username"]
+password = DATABASE_CONFIG["sql_server_dw"]["password"]
 
 conn_str = (
+<<<<<<< HEAD
+=======
+    # f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+>>>>>>> origin/code-review-4-ahmed
     f"DRIVER={{ODBC Driver 17 for SQL Server}};"
     f"SERVER={server},1433;"
     f"DATABASE={database};"
@@ -17,15 +22,19 @@ conn_str = (
     f"TrustServerCertificate=yes;"
 )
 
-sql_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'star_schema.sql')
+sql_path = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "data",
+    "star_schema.sql",
+)
 
 try:
-    with open(sql_path, 'r') as f:
+    with open(sql_path, "r") as f:
         sql = f.read()
     conn = pyodbc.connect(conn_str)
     cursor = conn.cursor()
     # Split and execute each statement
-    for stmt in sql.split(';'):
+    for stmt in sql.split(";"):
         stmt = stmt.strip()
         if stmt:
             cursor.execute(stmt)
@@ -35,4 +44,4 @@ try:
     conn.close()
 except Exception as e:
     print(f"Error creating star schema: {e}")
-    exit(1) 
+    exit(1)
