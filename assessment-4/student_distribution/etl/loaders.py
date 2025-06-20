@@ -76,7 +76,7 @@ def load_fact_table(df: pd.DataFrame, table_name: str, sql_conn_str: str):
     print(len(df), "records loaded")
 
 def transform_to_load(profile_df, orders_df, required, sql_conn_str):
-
+    
     url = get_connection_url(sql_conn_str)
     engine = create_engine(url)
 
@@ -107,7 +107,7 @@ def transform_to_load(profile_df, orders_df, required, sql_conn_str):
     final["order_date"] = pd.to_datetime(final["order_date"], errors='coerce')
     final = final.dropna()
     final["date_key"] = final["order_date"].dt.strftime("%Y%m%d").astype(int)
-    
+
     result = final[["book_key", "author_key", "customer_key", "date_key", "quantity", "price"]]
 
     if required:
