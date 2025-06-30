@@ -1,0 +1,85 @@
+{
+    "name": "FraudDetectionOrchestration",
+    "properties": {
+        "description": "Connection to Databricks for fraud detection",
+        "activities": [
+            {
+                "name": "EnvironmentSetup",
+                "type": "DatabricksNotebook",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 2,
+                    "retryIntervalInSeconds": 60,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/ahmedabdel@htddatacourseorg.onmicrosoft.com/01-Environment-Setup-Student"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksConnection",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "TransactionProcessing",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "EnvironmentSetup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 2,
+                    "retryIntervalInSeconds": 60,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/ahmedabdel@htddatacourseorg.onmicrosoft.com/02-Transaction-Data-Processing-student"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksConnection",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "RiskAnalytics",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "TransactionProcessing",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/ahmedabdel@htddatacourseorg.onmicrosoft.com/03-Risk-Analytics-student"
+                },
+                "linkedServiceName": {
+                    "referenceName": "DatabricksConnection",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2025-06-27T20:11:58Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
