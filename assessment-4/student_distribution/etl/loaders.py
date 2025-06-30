@@ -7,12 +7,7 @@ from sqlalchemy import create_engine, inspect
 from sqlalchemy.engine import URL
 import json
 from datetime import datetime, timedelta
-<<<<<<< HEAD
 from etl import cleaning
-=======
-
-
->>>>>>> origin/code-review-4-ahmed
 def get_connection_url(dcf):
     if isinstance(dcf, str):
         return dcf
@@ -20,10 +15,6 @@ def get_connection_url(dcf):
         f"mssql+pyodbc://{dcf['username']}:"
         f"{dcf['password']}@localhost:1433/"
         f"{dcf['database']}"
-<<<<<<< HEAD
-=======
-        # "?driver=ODBC+Driver+18+for+SQL+Server"
->>>>>>> origin/code-review-4-ahmed
         "?driver=ODBC+Driver+17+for+SQL+Server"
         "&TrustServerCertificate=yes"
     )

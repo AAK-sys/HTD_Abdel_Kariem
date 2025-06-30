@@ -10,10 +10,6 @@ username = DATABASE_CONFIG["sql_server_dw"]["username"]
 password = DATABASE_CONFIG["sql_server_dw"]["password"]
 
 conn_str = (
-<<<<<<< HEAD
-=======
-    # f"DRIVER={{ODBC Driver 18 for SQL Server}};"
->>>>>>> origin/code-review-4-ahmed
     f"DRIVER={{ODBC Driver 17 for SQL Server}};"
     f"SERVER={server},1433;"
     f"DATABASE={database};"
