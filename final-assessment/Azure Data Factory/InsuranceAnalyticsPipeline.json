@@ -1,0 +1,185 @@
+{
+    "name": "InsuranceAnalyticsPipeline",
+    "properties": {
+        "activities": [
+            {
+                "name": "InsuranceEnvironmentSetup",
+                "type": "DatabricksNotebook",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 2,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/ahmedabdel@htddatacourseorg.onmicrosoft.com/nbk_0_data_validation_student"
+                },
+                "linkedServiceName": {
+                    "referenceName": "AzureDatabricksConnection",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "InsuranceRiskProfiling",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "InsuranceEnvironmentSetup",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 2,
+                    "retryIntervalInSeconds": 45,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/ahmedabdel@htddatacourseorg.onmicrosoft.com/nbk_1_risk_profiling_student"
+                },
+                "linkedServiceName": {
+                    "referenceName": "AzureDatabricksConnection",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "InsuranceCLPVRetention",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "InsuranceRiskProfiling",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 2,
+                    "retryIntervalInSeconds": 45,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/ahmedabdel@htddatacourseorg.onmicrosoft.com/nbk_2_clpv_retention_student"
+                },
+                "linkedServiceName": {
+                    "referenceName": "AzureDatabricksConnection",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "InsuranceExecutiveDashboard",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "InsuranceCLPVRetention",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 2,
+                    "retryIntervalInSeconds": 60,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/ahmedabdel@htddatacourseorg.onmicrosoft.com/nbk_3_exec_dashboard_student"
+                },
+                "linkedServiceName": {
+                    "referenceName": "AzureDatabricksConnection",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "SuccessNotification",
+                "type": "WebActivity",
+                "dependsOn": [
+                    {
+                        "activity": "InsuranceExecutiveDashboard",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "method": "POST",
+                    "url": "https://httpbin.org/post",
+                    "body": {
+                        "message": "Insurance Analytics Pipeline completed successfully",
+                        "status": "success"
+                    }
+                }
+            },
+            {
+                "name": "FailureNotification",
+                "type": "WebActivity",
+                "dependsOn": [
+                    {
+                        "activity": "InsuranceEnvironmentSetup",
+                        "dependencyConditions": [
+                            "Failed"
+                        ]
+                    },
+                    {
+                        "activity": "InsuranceRiskProfiling",
+                        "dependencyConditions": [
+                            "Failed"
+                        ]
+                    },
+                    {
+                        "activity": "InsuranceExecutiveDashboard",
+                        "dependencyConditions": [
+                            "Failed"
+                        ]
+                    },
+                    {
+                        "activity": "InsuranceCLPVRetention",
+                        "dependencyConditions": [
+                            "Failed"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "method": "POST",
+                    "url": "https://httpbin.org/post",
+                    "body": {
+                        "message": "Insurance Analytics Pipeline failed",
+                        "status": "failure"
+                    }
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2025-07-10T18:18:56Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
