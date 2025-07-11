@@ -26,13 +26,24 @@ def check_duplicates(df, field):
     """Check for duplicate values in a field and return a summary or list.
     Hint: Use pandas.duplicated and value_counts. See 'Data Quality & Cleaning with Pandas'.
     """
-    pass
+    if df and field and field not in df.columns:
+        return False
+    duplicated = df[df.duplicated(subset=[field], keep=False)]
+    return duplicated[field].value_counts()
 
 def quality_report(df):
     """Generate a data quality report for a DataFrame (missing, invalid, duplicates, etc.).
     Hint: Summarize key quality metrics. See 'Integration Testing with Quality Metrics for Data Sources' and 'E2E Pipeline Testing with Health Monitoring'.
     """
-    pass
+    report = pd.DataFrame(index=df.columns)
+    
+    report['Missing Values'] = df.isnull().sum()
+    report['% Missing'] = (df.isnull().mean() * 100).round(2)
+    report['Unique Values'] = df.nunique()
+    report['Duplicate Rows'] = df.duplicated().sum()
+
+    
+    return report
     
 
 def validate_field_level(df: pd.DataFrame, rules: dict):
